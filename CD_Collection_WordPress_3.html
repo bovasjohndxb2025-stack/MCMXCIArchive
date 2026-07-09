@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MCMXCI.a.D Archive</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+#cd-collection-root {
+  --bg: #17101F;
+  --surface: #221A2E;
+  --surface-alt: #2B2138;
+  --border: #3A2E48;
+  --gold: #C9A227;
+  --text: #F3ECE0;
+  --text-muted: #A79BB0;
+  --text-dim: #6E6379;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', Arial, sans-serif;
+  padding-bottom: 60px;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 960px;
+  margin: 0 auto;
+  position: relative;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+#cd-collection-root[data-theme="light"] {
+  --bg: #FAF6F0;
+  --surface: #FFFFFF;
+  --surface-alt: #F1E9DC;
+  --border: #E2D6C4;
+  --gold: #A8790F;
+  --text: #2A2118;
+  --text-muted: #6E6153;
+  --text-dim: #9C907F;
+}
+#cd-collection-root * { box-sizing: border-box; }
+
+#cd-collection-root .theme-toggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  z-index: 31;
+}
+#cd-collection-root .theme-toggle:hover { border-color: var(--gold); color: var(--text); }
+
+#cd-collection-root .header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--bg);
+  padding: 24px 24px 14px 24px;
+  border-bottom: 1px solid var(--surface-alt);
+}
+#cd-collection-root .site-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 34px;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  padding-right: 130px;
+}
+#cd-collection-root .social-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+#cd-collection-root .social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+#cd-collection-root .social-btn:hover { border-color: var(--gold); color: var(--gold); }
+#cd-collection-root .social-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+#cd-collection-root .site-sub {
+  font-family: 'Courier New', monospace;
+  font-size: 17px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  margin-top: 4px;
+}
+
+#cd-collection-root .search-bar {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+#cd-collection-root .search-bar input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  flex: 1;
+  width: 100%;
+}
+#cd-collection-root .search-bar input::placeholder { color: var(--text-dim); }
+
+/* Best Sellers row */
+#cd-collection-root .bestsellers-wrap { padding: 6px 24px 4px 24px; }
+#cd-collection-root .bestsellers-label {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+#cd-collection-root .bestsellers-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 8px;
+}
+#cd-collection-root .bs-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+#cd-collection-root .bs-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+#cd-collection-root .bs-cover {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4A3F58;
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+#cd-collection-root .bs-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#cd-collection-root .bs-name {
+  font-family: Georgia, serif;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.3;
+}
+#cd-collection-root .bs-artist {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Crate nav */
+#cd-collection-root .crate-nav {
+  position: sticky;
+  top: var(--header-h, 120px);
+  z-index: 19;
+  display: flex;
+  overflow-x: auto;
+  gap: 4px;
+  padding: 10px 24px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--surface-alt);
+}
+#cd-collection-root .crate-btn {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-width: 26px;
+  padding: 5px 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#cd-collection-root .crate-btn.disabled { opacity: 0.3; pointer-events: none; }
+#cd-collection-root .crate-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+#cd-collection-root .list { padding: 8px 24px 0 24px; }
+#cd-collection-root .divider-tab { display: flex; align-items: center; gap: 10px; padding: 24px 0 10px 0; }
+#cd-collection-root .divider-notch { width: 18px; height: 3px; background: var(--gold); border-radius: 2px; }
+#cd-collection-root .divider-letter { font-family: Georgia, serif; font-weight: 700; font-size: 19px; color: var(--gold); letter-spacing: 0.04em; }
+#cd-collection-root .count-badge { font-family: 'Courier New', monospace; font-size: 10px; color: var(--text-dim); margin-left: auto; padding-left: 8px; }
+
+#cd-collection-root .row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 8px;
+  border-radius: 10px;
+  border-bottom: 1px solid rgba(58,46,72,0.4);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+#cd-collection-root .row:hover { background: var(--surface); }
+#cd-collection-root .cover-slot {
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4A3F58;
+  font-size: 26px;
+}
+#cd-collection-root .cover-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#cd-collection-root .row-text { flex: 1; min-width: 0; }
+#cd-collection-root .row-artist {
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8B7FA0;
+  margin-bottom: 2px;
+}
+#cd-collection-root .row-year { color: var(--gold); }
+#cd-collection-root .row-album {
+  font-family: Georgia, serif;
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+#cd-collection-root .row-sig {
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin-top: 4px;
+  max-width: 560px;
+}
+#cd-collection-root .row-tags { display: flex; gap: 6px; margin-top: 7px; flex-wrap: wrap; }
+#cd-collection-root .tag {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--surface-alt);
+  color: var(--text-muted);
+}
+
+#cd-collection-root .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); font-family: 'Courier New', monospace; font-size: 14px; }
+
+/* Scroll to top button */
+#cd-collection-root .scroll-top-btn {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  z-index: 50;
+}
+#cd-collection-root .scroll-top-btn.visible { display: flex; }
+
+/* Detail page */
+#cd-collection-root .detail-view { padding: 20px 24px 40px 24px; display: none; }
+#cd-collection-root .detail-view.active { display: block; }
+#cd-collection-root .list.hidden, #cd-collection-root .bestsellers-wrap.hidden, #cd-collection-root .crate-nav.hidden { display: none; }
+#cd-collection-root .back-btn {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+#cd-collection-root .back-btn:hover { color: var(--gold); border-color: var(--gold); }
+#cd-collection-root .detail-cover {
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1/1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4A3F58;
+  font-size: 48px;
+  margin: 0 auto 24px auto;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+#cd-collection-root .detail-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#cd-collection-root .detail-artist {
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 6px;
+}
+#cd-collection-root .detail-album {
+  font-family: Georgia, serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+#cd-collection-root .detail-year {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+}
+#cd-collection-root .detail-section { max-width: 640px; margin: 0 auto 20px auto; }
+#cd-collection-root .detail-label {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+#cd-collection-root .detail-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+}
+#cd-collection-root .detail-text.muted { color: var(--text-dim); font-style: italic; }
+#cd-collection-root .detail-genre-tag {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--text-muted);
+}
+#cd-collection-root .wiki-fallback-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 1px;
+}
+#cd-collection-root .wiki-fallback-link:hover { opacity: 0.75; }
+
+@media (max-width: 560px) {
+  #cd-collection-root .bestsellers-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  #cd-collection-root .bs-name { font-size: 11px; }
+  #cd-collection-root .row-artist { font-size: 12px; }
+  #cd-collection-root .row-album { font-size: 18px; }
+  #cd-collection-root .row-sig { font-size: 15px; }
+  #cd-collection-root .detail-album { font-size: 24px; }
+  #cd-collection-root .detail-cover { max-width: 240px; }
+}
+</style>
+</head>
+<body>
+
+<div id="cd-collection-root">
+  <div class="header" id="cdc-header">
+    <button class="theme-toggle" id="cdc-theme-toggle">&#9788; LIGHT</button>
+    <div class="site-name">MCMXCI.a.D Archive</div>
+    <div class="social-row">
+      <a class="social-btn" href="https://instagram.com/MCMXCI.a.d" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        Instagram
+      </a>
+      <a class="social-btn" href="https://tiktok.com/MCMXCI.a.d" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.15 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+        TikTok
+      </a>
+    </div>
+    <div class="site-sub" id="cdc-subtitle">LOADING...</div>
+    <div class="search-bar">
+      <span>&#128269;</span>
+      <input id="cdc-search" placeholder="Search artist, album, genre, or year...">
+    </div>
+  </div>
+
+  <div class="bestsellers-wrap" id="cdc-bestsellers-wrap">
+    <div class="bestsellers-label">Best Sellers &middot; This Week</div>
+    <div class="bestsellers-row" id="cdc-bestsellers"></div>
+  </div>
+
+  <div class="crate-nav" id="cdc-nav"></div>
+  <div class="list" id="cdc-list"></div>
+
+  <div class="detail-view" id="cdc-detail">
+    <button class="back-btn" id="cdc-back-btn">&larr; Back to Archive</button>
+    <div class="detail-cover" id="cdc-detail-cover">&#9673;</div>
+    <div class="detail-artist" id="cdc-detail-artist"></div>
+    <div class="detail-album" id="cdc-detail-album"></div>
+    <div class="detail-year" id="cdc-detail-year"></div>
+    <div class="detail-section">
+      <div class="detail-label">Genre</div>
+      <span class="detail-genre-tag" id="cdc-detail-genre"></span>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Significance &amp; Specialty</div>
+      <div class="detail-text" id="cdc-detail-sig"></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">From Wikipedia</div>
+      <div class="detail-text" id="cdc-detail-wiki">Looking this up...</div>
+      <a class="wiki-fallback-link" id="cdc-wiki-link" href="#" target="_blank" rel="noopener" style="display:none;">Search for this album on Wikipedia &rarr;</a>
+    </div>
+  </div>
+
+  <button class="scroll-top-btn" id="cdc-scroll-top">&#8593;</button>
+</div>
+
+<script>
+(function () {
+  const ROOT = document.getElementById("cd-collection-root");
+  const toggleBtn = document.getElementById("cdc-theme-toggle");
+
+  function applyTheme(theme) {
+    ROOT.setAttribute("data-theme", theme);
+    toggleBtn.innerHTML = theme === "light" ? "&#9789; DARK" : "&#9788; LIGHT";
+    try { localStorage.setItem("cdc-theme", theme); } catch (e) {}
+  }
+  let savedTheme = "dark";
+  try { savedTheme = localStorage.getItem("cdc-theme") || "dark"; } catch (e) {}
+  applyTheme(savedTheme);
+  toggleBtn.addEventListener("click", () => {
+    const current = ROOT.getAttribute("data-theme") || "dark";
+    applyTheme(current === "light" ? "dark" : "light");
+  });
+
+  const COLLECTION = [{"artist": "(Unclear artist)", "album": "Wild Seed", "year": "", "genre": "Unclear", "significance": "", "searchable": false}, {"artist": "(Unclear dark/silver cover)", "album": "(title unclear)", "year": "", "genre": "Unclear", "significance": "", "searchable": false}, {"artist": "10,000 Maniacs", "album": "Blind Man's Zoo", "year": "1989", "genre": "Alt Rock", "significance": "Politically charged follow-up to 'In My Tribe'; tackled apartheid and homelessness.", "searchable": true}, {"artist": "10,000 Maniacs", "album": "In My Tribe", "year": "1987", "genre": "Alt Rock", "significance": "Breakthrough alt-rock album; includes cover of Cat Stevens' 'Peace Train' (later pulled from pressings).", "searchable": true}, {"artist": "808 State", "album": "Gorgeous", "year": "1993", "genre": "Electronic/Techno", "significance": "UK acid house/techno pioneers' fourth album, blending rave energy with pop hooks.", "searchable": true}, {"artist": "a-ha", "album": "Headlines and Deadlines: The Hits of a-ha", "year": "1991", "genre": "Synth-Pop", "significance": "Compiles the synth-pop trio's biggest hits including 'Take On Me.'", "searchable": true}, {"artist": "Aaron Neville", "album": "Warm Your Heart", "year": "1991", "genre": "R&B/Soul", "significance": "", "searchable": true}, {"artist": "ABC", "album": "Absolutely", "year": "1990", "genre": "New Wave", "significance": "Career-spanning hits set from the sophisti-pop/new wave group behind 'The Lexicon of Love.'", "searchable": true}, {"artist": "Ace of Base", "album": "Happy Nation (U.S. Version)", "year": "1994", "genre": "Eurodance/Pop", "significance": "Debut album, one of best-selling debuts ever; 'The Sign' became a global smash.", "searchable": true}, {"artist": "Ace of Base", "album": "The Bridge", "year": "1995", "genre": "Eurodance/Pop", "significance": "Third album, more polished pop-dance sound, less commercially dominant than debut.", "searchable": true}, {"artist": "Adele", "album": "19", "year": "2008", "genre": "Pop/Soul", "significance": "Debut album named for her age at the time; launched her career with 'Chasing Pavements.'", "searchable": true}, {"artist": "Air", "album": "(self-titled duo cover, title unclear)", "year": "", "genre": "Electronic/Downtempo", "significance": "", "searchable": false}, {"artist": "Air", "album": "Love 2", "year": "2009", "genre": "Electronic/Downtempo", "significance": "Fourth studio album returning to a warmer, more organic sound after 'Pocket Symphony.'", "searchable": true}, {"artist": "Air", "album": "Moon Safari", "year": "1998", "genre": "Electronic/Downtempo", "significance": "Landmark French downtempo/electronic debut; defined the 'chillout' genre of the late '90s.", "searchable": true}, {"artist": "Alanis Morissette", "album": "Flavors of Entanglement", "year": "2008", "genre": "Alt Rock", "significance": "More electronic-leaning album produced with Guy Sigsworth after her divorce from Ryan Reynolds.", "searchable": true}, {"artist": "Alanis Morissette", "album": "Jagged Little Pill", "year": "1995", "genre": "Alt Rock", "significance": "One of the best-selling albums ever; raw confessional rock that defined mid-90s alt-pop.", "searchable": true}, {"artist": "Ali Campbell", "album": "Big Love", "year": "2001", "genre": "Reggae/Pop", "significance": "Solo debut from the UB40 frontman after decades fronting the reggae band.", "searchable": true}, {"artist": "Alison Moyet", "album": "Singles", "year": "1995", "genre": "Pop/Soul", "significance": "Compiles hits from her solo career after Yazoo, including 'All Cried Out' and 'Only You.'", "searchable": true}, {"artist": "All About Eve", "album": "(self-titled)", "year": "", "genre": "Alt Rock/Goth", "significance": "", "searchable": true}, {"artist": "All About Eve", "album": "Scarlet and Other Stories", "year": "1989", "genre": "Alt Rock/Goth", "significance": "Their most commercially successful album, blending goth-folk with radio-friendly melodies.", "searchable": true}, {"artist": "All About Eve", "album": "Touched by Jesus", "year": "1991", "genre": "Alt Rock/Goth", "significance": "Fourth album; softer, more acoustic direction than their earlier goth-rock sound.", "searchable": true}, {"artist": "All About Eve", "album": "Ultraviolet", "year": "1992", "genre": "Alt Rock/Goth", "significance": "Comeback album after a hiatus, later reissue expanded the band's later catalogue.", "searchable": true}, {"artist": "All Saints", "album": "All Hits", "year": "2001", "genre": "Pop/R&B", "significance": "Compilation of the British girl group's biggest singles, including 'Never Ever' and 'Pure Shores.'", "searchable": true}, {"artist": "Alphaville", "album": "(self-titled photo cover)", "year": "", "genre": "Synth-Pop", "significance": "", "searchable": true}, {"artist": "Alphaville", "album": "Forever Pop", "year": "2004", "genre": "Synth-Pop", "significance": "Remix/hits compilation reworking the German synth-pop band's classics for the 2000s dance scene.", "searchable": true}, {"artist": "Alphaville", "album": "Salvation", "year": "1997", "genre": "Synth-Pop", "significance": "Comeback album after years away; retained the band's signature lush synth sound.", "searchable": true}, {"artist": "Alphaville", "album": "The Breathtaking Blue", "year": "1989", "genre": "Synth-Pop", "significance": "Follow-up to their breakout debut, includes 'Sounds Like a Melody.'", "searchable": true}, {"artist": "Andreas Vollenweider", "album": "Book of Roses", "year": "1991", "genre": "New Age/Instrumental", "significance": "Swiss harpist's ambient/new age work, part of his signature electro-acoustic harp style.", "searchable": true}, {"artist": "Andreas Vollenweider", "album": "Dancing with the Lion", "year": "1979", "genre": "New Age/Instrumental", "significance": "His debut album, pioneering electronically processed harp compositions.", "searchable": true}, {"artist": "Andreas Vollenweider", "album": "Eolian Minstrel", "year": "1995", "genre": "New Age/Instrumental", "significance": "Features guest vocalists including Carly Simon; continues his new age harp signature.", "searchable": true}, {"artist": "Apollo 440", "album": "The Divine Compilation (2CD)", "year": "1998", "genre": "Electronic", "significance": "Compiles the big beat/electronic act's remixes and singles, including 'Stop the Rock.'", "searchable": true}, {"artist": "Armin van Buuren", "album": "A State of Trance 2008", "year": "2008", "genre": "Trance", "significance": "Annual mix compilation from the trance DJ's globally influential ASOT radio series.", "searchable": true}, {"artist": "Art of Noise, The", "album": "The Best of the Art of Noise", "year": "1988", "genre": "Electronic/Art Pop", "significance": "Compiles work from the pioneering sampling/production collective behind 'Close (to the Edit).'", "searchable": true}, {"artist": "Ashcroft, Richard", "album": "Alone with Everybody", "year": "2000", "genre": "Alt Rock", "significance": "Solo debut after The Verve's split; UK #1 album, includes 'A Song for the Lovers.'", "searchable": true}, {"artist": "Ashcroft, Richard", "album": "Human Conditions", "year": "2002", "genre": "Alt Rock", "significance": "Second solo album, more orchestral and introspective than his debut.", "searchable": true}, {"artist": "Aswad", "album": "Firesticks", "year": "1996", "genre": "Reggae", "significance": "UK reggae band's alternative mixes album, reworking hits with guest MCs.", "searchable": true}, {"artist": "B-Tribe", "album": "Fiesta Fatal", "year": "", "genre": "Flamenco/World", "significance": "", "searchable": true}, {"artist": "B-Tribe", "album": "Suave Suave", "year": "", "genre": "Flamenco/World", "significance": "", "searchable": true}, {"artist": "Beautiful World", "album": "Forever", "year": "1998", "genre": "Pop/Vocal", "significance": "Vocal trance/pop project associated with the trance compilation scene of the late '90s.", "searchable": true}, {"artist": "Beautiful World", "album": "In Existence", "year": "", "genre": "Pop/Vocal", "significance": "", "searchable": true}, {"artist": "Belinda Carlisle", "album": "Runaway Horses", "year": "1989", "genre": "Pop", "significance": "Her commercial peak solo album, includes 'Leave a Light On' and 'Summer Rain.'", "searchable": true}, {"artist": "Belinda Carlisle", "album": "The Best of Belinda, Volume 1", "year": "1992", "genre": "Pop", "significance": "Hits compilation covering her post-Go-Go's solo pop career.", "searchable": true}, {"artist": "Berlin", "album": "Best of Berlin 1979-1988", "year": "1988", "genre": "New Wave", "significance": "Compiles the new wave band's hits including 'Take My Breath Away' from Top Gun.", "searchable": true}, {"artist": "Billy Idol", "album": "(self-titled)", "year": "1982", "genre": "Punk/Rock", "significance": "Debut solo album after leaving Generation X; includes 'White Wedding' and 'Dancing with Myself.'", "searchable": true}, {"artist": "Billy Idol", "album": "Charmed Life", "year": "1990", "genre": "Punk/Rock", "significance": "Comeback album after a near-fatal motorcycle accident; includes 'Cradle of Love.'", "searchable": true}, {"artist": "Billy Idol", "album": "Cyberpunk", "year": "1993", "genre": "Punk/Rock", "significance": "Concept album exploring early internet/cyberpunk themes; commercially unsuccessful but ambitious.", "searchable": true}, {"artist": "Billy Idol", "album": "Rebel Yell", "year": "1983", "genre": "Punk/Rock", "significance": "His commercial and critical peak; title track and 'Eyes Without a Face' are signature hits.", "searchable": true}, {"artist": "Billy Idol", "album": "Vital Idol", "year": "1985", "genre": "Punk/Rock", "significance": "Remix compilation reworking his hits for club play.", "searchable": true}, {"artist": "Billy Idol", "album": "Whiplash Smile", "year": "1986", "genre": "Punk/Rock", "significance": "Includes 'To Be a Lover'; continued his mid-80s hard rock/pop-punk crossover.", "searchable": true}, {"artist": "Bruce Springsteen", "album": "Greatest Hits", "year": "1995", "genre": "Rock", "significance": "Career-spanning hits from one of rock's most significant songwriters and performers.", "searchable": true}, {"artist": "Bryan Ferry / Roxy Music", "album": "The Ultimate Collection", "year": "1988", "genre": "Rock/Art Pop", "significance": "Combines solo Bryan Ferry and Roxy Music hits into one collection.", "searchable": true}, {"artist": "BT", "album": "Ima", "year": "1996", "genre": "Electronic/Trance", "significance": "Trance/electronic producer's influential sophomore album, pushing progressive trance forward.", "searchable": true}, {"artist": "C.J. Lewis", "album": "Dollars", "year": "1994", "genre": "Reggae/Pop", "significance": "UK reggae-pop artist's album featuring the hit 'Sweets for My Sweet.'", "searchable": true}, {"artist": "Cardigans, The", "album": "First Band on the Moon", "year": "1996", "genre": "Alt Rock/Pop", "significance": "Swedish band's breakthrough album featuring the global hit 'Lovefool.'", "searchable": true}, {"artist": "Caroline Lavelle", "album": "Spirit", "year": "1997", "genre": "World/New Age", "significance": "Cellist/vocalist known for her Celtic-crossover style, having worked with Peter Gabriel and Massive Attack.", "searchable": true}, {"artist": "Cars, The", "album": "Door to Door", "year": "1987", "genre": "New Wave/Rock", "significance": "The band's final studio album before their 1988 breakup.", "searchable": true}, {"artist": "Cars, The", "album": "Greatest Hits", "year": "1985", "genre": "New Wave/Rock", "significance": "Compiles the new wave band's biggest singles including 'Just What I Needed.'", "searchable": true}, {"artist": "Celine Dion", "album": "The Colour of My Love", "year": "1993", "genre": "Pop", "significance": "Includes 'The Power of Love'; marked her transition to English-language pop superstardom.", "searchable": true}, {"artist": "Chapman, Tracy", "album": "Matters of the Heart", "year": "1992", "genre": "Folk/Rock", "significance": "Third album, more personal and introspective than her celebrated debut.", "searchable": true}, {"artist": "Chapman, Tracy", "album": "New Beginning", "year": "1995", "genre": "Folk/Rock", "significance": "Multi-platinum comeback album, includes the Grammy-winning hit 'Give Me One Reason.'", "searchable": true}, {"artist": "China Crisis", "album": "Diary: A Collection", "year": "1990", "genre": "New Wave", "significance": "Hits compilation from the underrated English new wave/sophisti-pop band.", "searchable": true}, {"artist": "Chris Isaak", "album": "(self-titled)", "year": "1986", "genre": "Rockabilly/Pop", "significance": "Second studio album, refining his rockabilly-noir sound before mainstream breakthrough.", "searchable": true}, {"artist": "Chris Isaak", "album": "Forever Blue", "year": "1995", "genre": "Rockabilly/Pop", "significance": "Deeply personal breakup album, considered one of his best; includes 'Somebody's Crying.'", "searchable": true}, {"artist": "Chris Isaak", "album": "Heart Shaped World", "year": "1989", "genre": "Rockabilly/Pop", "significance": "Includes 'Wicked Game,' famously featured in David Lynch's 'Wild at Heart.'", "searchable": true}, {"artist": "Chris Isaak", "album": "San Francisco Days", "year": "1993", "genre": "Rockabilly/Pop", "significance": "Follow-up to his breakthrough, continued his rockabilly-noir sound.", "searchable": true}, {"artist": "Chris Isaak", "album": "Wicked Game", "year": "1991", "genre": "Rockabilly/Pop", "significance": "Reissue/compilation capitalizing on the massive success of the title single.", "searchable": true}, {"artist": "Chris Rea", "album": "The Best of Chris Rea", "year": "1994", "genre": "Rock/Blues", "significance": "Compiles decades of hits from the British singer-songwriter known for 'Road to Hell.'", "searchable": true}, {"artist": "Cocteau Twins", "album": "Blue Bell Knoll", "year": "1988", "genre": "Dream Pop", "significance": "Their major-label debut for Capitol; ethereal dream pop with denser production.", "searchable": true}, {"artist": "Cocteau Twins", "album": "Four-Calendar Cafe", "year": "1993", "genre": "Dream Pop", "significance": "More accessible, clearer vocals than earlier work; often seen as a turning point.", "searchable": true}, {"artist": "Cocteau Twins", "album": "Garlands", "year": "1982", "genre": "Dream Pop", "significance": "Debut album; raw, gothic-tinged post-punk foundation of their dream pop sound.", "searchable": true}, {"artist": "Cocteau Twins", "album": "Heaven or Las Vegas", "year": "1990", "genre": "Dream Pop", "significance": "Widely considered their masterpiece; lush, melodic dream pop landmark.", "searchable": true}, {"artist": "Coldplay", "album": "A Rush of Blood to the Head", "year": "2002", "genre": "Alt Rock/Pop", "significance": "Massively acclaimed second album; includes 'Clocks' and 'The Scientist.'", "searchable": true}, {"artist": "Coldplay", "album": "Mylo Xyloto", "year": "2011", "genre": "Alt Rock/Pop", "significance": "Concept album with a more electronic, arena-pop direction; includes 'Paradise.'", "searchable": true}, {"artist": "Coldplay", "album": "Parachutes", "year": "2000", "genre": "Alt Rock/Pop", "significance": "Debut album that launched the band; includes 'Yellow.'", "searchable": true}, {"artist": "Coldplay", "album": "Viva la Vida or Death and All His Friends", "year": "2008", "genre": "Alt Rock/Pop", "significance": "Grammy Album of the Year; produced by Brian Eno, marked a sonic reinvention.", "searchable": true}, {"artist": "Coldplay", "album": "X&Y", "year": "2005", "genre": "Alt Rock/Pop", "significance": "Their biggest-selling studio album; includes 'Speed of Sound' and 'Fix You.'", "searchable": true}, {"artist": "Corrs, The", "album": "Forgiven, Not Forgotten", "year": "1995", "genre": "Pop/Folk", "significance": "Debut album blending Irish traditional music with pop; hugely successful in Europe.", "searchable": true}, {"artist": "Cranberries, The", "album": "Bury the Hatchet", "year": "1999", "genre": "Alt Rock", "significance": "Fourth album, includes 'Promises'; continued their alt-rock success post-'Zombie.'", "searchable": true}, {"artist": "Cranberries, The", "album": "Everybody Else Is Doing It, So Why Can't We?", "year": "1993", "genre": "Alt Rock", "significance": "Debut album with 'Linger' and 'Dreams'; defined 90s Irish alt-rock.", "searchable": true}, {"artist": "Cranberries, The", "album": "To the Faithful Departed", "year": "", "genre": "Alt Rock", "significance": "", "searchable": true}, {"artist": "Crowded House", "album": "The Very Best of Crowded House", "year": "1996", "genre": "Pop Rock", "significance": "Hits compilation including 'Don't Dream It's Over' and 'Weather with You.'", "searchable": true}, {"artist": "Culture Club", "album": "This Time: The First Four Years", "year": "1987", "genre": "New Wave/Pop", "significance": "Compiles the band's hits from their imperial early-80s New Romantic period.", "searchable": true}, {"artist": "Cutting Crew", "album": "Broadcast", "year": "1986", "genre": "Rock/Pop", "significance": "Debut album featuring the transatlantic #1 hit '(I Just) Died in Your Arms.'", "searchable": true}, {"artist": "Cyndi Lauper", "album": "Twelve Deadly Cyns... and Then Some", "year": "1994", "genre": "Pop", "significance": "Hits compilation spanning her 80s pop peak with 'Girls Just Want to Have Fun.'", "searchable": true}, {"artist": "David Arnold", "album": "Shaken and Stirred: The David Arnold James Bond Project", "year": "1997", "genre": "Soundtrack", "significance": "Reimagines classic Bond themes with alt/electronic artists; Arnold later scored several Bond films himself.", "searchable": true}, {"artist": "Deep Forest", "album": "(remix/gold circle cover)", "year": "", "genre": "World/Electronic", "significance": "", "searchable": true}, {"artist": "Deep Forest", "album": "Boheme", "year": "1995", "genre": "World/Electronic", "significance": "Grammy-winning album blending Eastern European folk vocals with ambient/world electronica.", "searchable": true}, {"artist": "Def Leppard", "album": "Vault: Greatest Hits 1980-1995", "year": "1995", "genre": "Hard Rock", "significance": "Hits collection from the arena rock band behind 'Hysteria' and 'Pyromania.'", "searchable": true}, {"artist": "Depeche Mode", "album": "The Singles 81-85", "year": "1985", "genre": "Synth-Pop", "significance": "Early singles compilation, includes 'Just Can't Get Enough' and 'People Are People.'", "searchable": true}, {"artist": "Dido", "album": "Girl Who Got Away", "year": "2003", "genre": "Pop", "significance": "Third studio album, more electronic-influenced than her earlier work.", "searchable": true}, {"artist": "Dido", "album": "Life for Rent", "year": "2003", "genre": "Pop", "significance": "Her biggest-selling album; includes 'White Flag.'", "searchable": true}, {"artist": "Dido", "album": "Safe Trip Home", "year": "2008", "genre": "Pop", "significance": "More stripped-down, atmospheric album than her earlier pop-leaning work.", "searchable": true}, {"artist": "Dire Straits", "album": "Brothers in Arms", "year": "1985", "genre": "Rock", "significance": "One of the first albums mixed for CD; includes 'Money for Nothing' and 'Walk of Life.'", "searchable": true}, {"artist": "Dire Straits", "album": "Money for Nothing", "year": "1988", "genre": "Rock", "significance": "Hits compilation named after their MTV-era anthem.", "searchable": true}, {"artist": "Dire Straits", "album": "On Every Street", "year": "1991", "genre": "Rock", "significance": "Their final studio album before the band's dissolution.", "searchable": true}, {"artist": "Donna Lewis", "album": "Now in a Minute", "year": "1996", "genre": "Pop", "significance": "Debut album featuring the global hit 'I Love You Always Forever.'", "searchable": true}, {"artist": "Dreadzone", "album": "Second Light", "year": "1995", "genre": "Electronic/Dub", "significance": "Blends dub, breakbeat and folk influences; a cult favourite of UK electronic music.", "searchable": true}, {"artist": "Dubstar", "album": "Disgraceful (Double CD)", "year": "1995", "genre": "Indie Pop/Electronic", "significance": "Debut album; indie-electronic with a distinctly British melancholic pop sound.", "searchable": true}, {"artist": "Dubstar", "album": "Make It Better", "year": "1996", "genre": "Indie Pop/Electronic", "significance": "Sophomore album continuing their synth-pop/indie sound.", "searchable": true}, {"artist": "Eagles", "album": "Hell Freezes Over", "year": "1994", "genre": "Rock", "significance": "Live reunion album, ending the band's famous 14-year hiatus; includes new studio tracks.", "searchable": true}, {"artist": "Eddi Reader", "album": "Candyfloss and Medicine", "year": "1996", "genre": "Folk/Pop", "significance": "Solo album from the former Fairground Attraction singer, includes 'Town Without Pity.'", "searchable": true}, {"artist": "Enchant", "album": "(self-titled)", "year": "1993", "genre": "Progressive Rock", "significance": "Debut from the American progressive rock band, drawing Rush/Yes influences.", "searchable": true}, {"artist": "Enigma", "album": "Le Roi Est Mort, Vive Le Roi!", "year": "1996", "genre": "Electronic/New Age", "significance": "Fourth album continuing Enigma's Gregorian-chant-meets-electronica formula.", "searchable": true}, {"artist": "Enigma", "album": "MCMXC a.D. (Limited Edition)", "year": "1990", "genre": "Electronic/New Age", "significance": "Debut album; 'Sadeness (Part I)' pioneered the ambient/Gregorian chant dance genre.", "searchable": true}, {"artist": "Enigma", "album": "The Cross of Changes", "year": "1993", "genre": "Electronic/New Age", "significance": "Includes 'Return to Innocence,' one of the era's most recognisable ambient hits.", "searchable": true}, {"artist": "Enigma", "album": "The Fall of a Rebel Angel", "year": "2016", "genre": "Electronic/New Age", "significance": "Later-career release continuing the project's atmospheric, spiritually-themed electronica.", "searchable": true}, {"artist": "Enya", "album": "Amarantine", "year": "2005", "genre": "New Age/Celtic", "significance": "Includes tracks in the constructed Loxian language; continued her signature Celtic-ambient sound.", "searchable": true}, {"artist": "Enya", "album": "Dark Sky Island (Deluxe)", "year": "2015", "genre": "New Age/Celtic", "significance": "Later career album, her first in seven years at time of release.", "searchable": true}, {"artist": "Enya", "album": "Shepherd Moons", "year": "1991", "genre": "New Age/Celtic", "significance": "Her commercial breakthrough in the US; Grammy Award-winning.", "searchable": true}, {"artist": "Enya", "album": "The Celts", "year": "1992", "genre": "New Age/Celtic", "significance": "Soundtrack originally composed for a BBC documentary series; her debut solo release.", "searchable": true}, {"artist": "Enya", "album": "The Memory of Trees", "year": "1995", "genre": "New Age/Celtic", "significance": "Grammy-winning album continuing her ambient/Celtic style.", "searchable": true}, {"artist": "Enya", "album": "The Very Best of Enya", "year": "2009", "genre": "New Age/Celtic", "significance": "Career-spanning hits compilation.", "searchable": true}, {"artist": "Enya", "album": "Watermark", "year": "1988", "genre": "New Age/Celtic", "significance": "Global breakthrough album; includes 'Orinoco Flow,' a worldwide #1 hit.", "searchable": true}, {"artist": "Estefan, Gloria & Miami Sound Machine", "album": "Anything for You", "year": "1988", "genre": "Latin Pop", "significance": "Includes the title track, a US #1 hit; marked Estefan's crossover to English-language pop.", "searchable": true}, {"artist": "Eurythmics", "album": "Greatest Hits", "year": "1991", "genre": "New Wave/Pop", "significance": "Compiles the duo's biggest hits including 'Sweet Dreams (Are Made of This).'", "searchable": true}, {"artist": "Everything But the Girl", "album": "Amplified Heart", "year": "1994", "genre": "Electronic/Pop", "significance": "Contains 'Missing,' later remixed into a massive dance hit by Todd Terry.", "searchable": true}, {"artist": "Everything But the Girl", "album": "Eden", "year": "1984", "genre": "Electronic/Pop", "significance": "Debut album, jazz-inflected sophisti-pop that established the duo's sound.", "searchable": true}, {"artist": "Everything But the Girl", "album": "Walking Wounded", "year": "1996", "genre": "Electronic/Pop", "significance": "Marked their full transition into drum & bass/electronic territory.", "searchable": true}, {"artist": "Faithless", "album": "Outrospective", "year": "2001", "genre": "Electronic", "significance": "Includes 'We Come 1'; continued their run of anthemic electronic singles.", "searchable": true}, {"artist": "Faithless", "album": "Reverence (Special Edition)", "year": "1996", "genre": "Electronic", "significance": "Debut album, includes 'Insomnia,' a defining 90s dance anthem.", "searchable": true}, {"artist": "Faithless", "album": "To All New Arrivals", "year": "2006", "genre": "Electronic", "significance": "Later album continuing the group's spiritually-tinged electronic sound.", "searchable": true}, {"artist": "Fischerspooner", "album": "Odyssey", "year": "2005", "genre": "Electroclash", "significance": "Electroclash act's second album, more polished pop-production than their cult debut.", "searchable": true}, {"artist": "Fleetwood Mac", "album": "Time", "year": "1995", "genre": "Rock", "significance": "Rare lineup album without Lindsey Buckingham or Stevie Nicks; commercially unsuccessful.", "searchable": true}, {"artist": "Foreigner", "album": "The Very Best... and Beyond", "year": "1992", "genre": "Rock", "significance": "Hits compilation from the arena rock band behind 'I Want to Know What Love Is.'", "searchable": true}, {"artist": "Fourplay", "album": "Between the Sheets", "year": "1993", "genre": "Jazz", "significance": "Smooth jazz supergroup album featuring Bob James, Lee Ritenour, Nathan East, Harvey Mason.", "searchable": true}, {"artist": "Gabriel, Peter", "album": "Shaking the Tree: Sixteen Golden Greats", "year": "1990", "genre": "Art Rock/Pop", "significance": "Hits compilation spanning his art-rock solo career, includes 'Sledgehammer.'", "searchable": true}, {"artist": "Garbage", "album": "Version 2.0", "year": "1998", "genre": "Alt Rock", "significance": "Grammy-nominated sophomore album; includes 'Push It' and 'I Think I'm Paranoid.'", "searchable": true}, {"artist": "George Michael", "album": "TwentyFive (2CD)", "year": "2006", "genre": "Pop", "significance": "Career retrospective marking 25 years since Wham!'s debut.", "searchable": true}, {"artist": "Gipsy Kings", "album": "Greatest Hits", "year": "1994", "genre": "Flamenco/World", "significance": "Compiles the flamenco-pop group's biggest hits including 'Bamboleo.'", "searchable": true}, {"artist": "Global House / Oystein Sevag", "album": "Global House", "year": "", "genre": "New Age", "significance": "", "searchable": true}, {"artist": "Goldfrapp", "album": "Black Cherry", "year": "2003", "genre": "Electronic/Trip-Hop", "significance": "Marked a shift to glam-electro sound after the ambient 'Felt Mountain.'", "searchable": true}, {"artist": "Goldfrapp", "album": "Felt Mountain", "year": "2000", "genre": "Electronic/Trip-Hop", "significance": "Debut album, cinematic trip-hop/ambient style, Mercury Prize nominated.", "searchable": true}, {"artist": "Goldfrapp", "album": "Head First", "year": "2010", "genre": "Electronic/Trip-Hop", "significance": "Full embrace of 80s synth-pop sound, a deliberate stylistic pivot.", "searchable": true}, {"artist": "Goldfrapp", "album": "Supernature", "year": "2005", "genre": "Electronic/Trip-Hop", "significance": "Includes 'Ooh La La'; glam-disco direction, one of their most commercially successful records.", "searchable": true}, {"artist": "Gotan Project", "album": "(self-titled/logo box)", "year": "", "genre": "Nu-Tango/Electronic", "significance": "", "searchable": true}, {"artist": "Govi", "album": "(gold cover, title unclear)", "year": "", "genre": "New Age/World", "significance": "", "searchable": false}, {"artist": "Govi", "album": "Cuchama", "year": "1996", "genre": "New Age/World", "significance": "New age/world guitarist known for blending Native American and flamenco influences.", "searchable": true}, {"artist": "Grace Jones", "album": "Island Life", "year": "1985", "genre": "Pop/Reggae", "significance": "Hits compilation featuring 'Slave to the Rhythm' and 'Pull Up to the Bumper'; iconic Jean-Paul Goude cover art.", "searchable": true}, {"artist": "Groove Armada", "album": "Black Light", "year": "2010", "genre": "Electronic/Dance", "significance": "Later-period album from the British dance/downtempo duo.", "searchable": true}, {"artist": "Human League, The", "album": "Greatest Hits", "year": "1988", "genre": "Synth-Pop", "significance": "Compiles synth-pop essentials including 'Don't You Want Me.'", "searchable": true}, {"artist": "Human League, The", "album": "Octopus", "year": "1995", "genre": "Synth-Pop", "significance": "Comeback album after years away; includes 'Tell Me When.'", "searchable": true}, {"artist": "Iglesias, Julio", "album": "(self-titled, Nice Price)", "year": "1983", "genre": "Latin Pop", "significance": "Budget reissue of the Spanish superstar's crossover pop catalogue.", "searchable": true}, {"artist": "INXS", "album": "Elegantly Wasted", "year": "1997", "genre": "Rock/Pop", "significance": "Album released after the band's commercial peak, preceding Michael Hutchence's death in 1997.", "searchable": true}, {"artist": "Jack Johnson", "album": "In Between Dreams", "year": "2005", "genre": "Acoustic/Folk", "significance": "His breakthrough mainstream album; includes 'Better Together' and 'Banana Pancakes.'", "searchable": true}, {"artist": "Jam & Spoon", "album": "Tripomatic Fairytales 2001", "year": "2000", "genre": "Trance/Electronic", "significance": "German trance duo's influential concept album blending ambient and dance.", "searchable": true}, {"artist": "James", "album": "(Best Of)", "year": "", "genre": "Alt Rock", "significance": "", "searchable": true}, {"artist": "Jamiroquai", "album": "Travelling Without Moving", "year": "1996", "genre": "Funk/Acid Jazz", "significance": "Includes 'Virtual Insanity'; one of the best-selling UK albums of the 90s.", "searchable": true}, {"artist": "Japan feat. David Sylvian", "album": "Souvenir", "year": "1992", "genre": "New Wave/Art Rock", "significance": "Compilation of the influential art-rock/new wave band fronted by David Sylvian.", "searchable": true}, {"artist": "Joe Satriani", "album": "Time Machine (2CD)", "year": "1993", "genre": "Instrumental Rock", "significance": "Double compilation of unreleased material and live recordings from the guitar virtuoso.", "searchable": true}, {"artist": "John Mellencamp", "album": "Mr. Happy Go Lucky", "year": "1996", "genre": "Rock", "significance": "Experimented with electronic/dance production, atypical for the heartland rocker.", "searchable": true}, {"artist": "Joni Mitchell", "album": "Night Ride Home", "year": "1991", "genre": "Folk/Rock", "significance": "Later-period album showcasing her continued lyrical and musical sophistication.", "searchable": true}, {"artist": "Jose Padilla", "album": "Navigator", "year": "2005", "genre": "Balearic/Chillout", "significance": "From the DJ credited with founding the Café del Mar chillout sound.", "searchable": true}, {"artist": "Julia Fordham", "album": "Falling Forward", "year": "1994", "genre": "Pop/Jazz", "significance": "Sophisti-pop/jazz-pop singer-songwriter known for a rich vocal style.", "searchable": true}, {"artist": "k.d. lang", "album": "(Asian import)", "year": "", "genre": "Country/Pop", "significance": "", "searchable": true}, {"artist": "k.d. lang", "album": "Ingenue", "year": "1992", "genre": "Country/Pop", "significance": "Career-defining album; includes 'Constant Craving,' won a Grammy.", "searchable": true}, {"artist": "Kate Bush", "album": "The Whole Story", "year": "1986", "genre": "Art Pop", "significance": "Definitive hits compilation, includes a re-recorded 'Wuthering Heights' vocal.", "searchable": true}, {"artist": "Keane", "album": "Hopes and Fears", "year": "2004", "genre": "Alt Rock/Pop", "significance": "Debut album, UK's best-selling album of 2004; includes 'Somewhere Only We Know.'", "searchable": true}, {"artist": "Keane", "album": "Perfect Symmetry", "year": "2008", "genre": "Alt Rock/Pop", "significance": "Marked a more synth-driven sound compared to their piano-rock beginnings.", "searchable": true}, {"artist": "Keane", "album": "Under the Iron Sea", "year": "2006", "genre": "Alt Rock/Pop", "significance": "Darker, more layered second album; includes 'Is It Any Wonder?'", "searchable": true}, {"artist": "Kenny G", "album": "Breathless", "year": "1992", "genre": "Smooth Jazz", "significance": "Best-selling instrumental album of all time; smooth jazz landmark.", "searchable": true}, {"artist": "KLF, The", "album": "The White Room", "year": "1991", "genre": "Electronic/Dance", "significance": "Only studio album from the influential/controversial acid house/pop act.", "searchable": true}, {"artist": "Knopfler, Mark", "album": "Golden Heart", "year": "1996", "genre": "Rock/Soundtrack", "significance": "First solo album after Dire Straits, featuring Celtic and country textures.", "searchable": true}, {"artist": "Knopfler, Mark", "album": "Screenplaying", "year": "1993", "genre": "Rock/Soundtrack", "significance": "Compiles film score work including Local Hero and The Princess Bride.", "searchable": true}, {"artist": "Kylie Minogue", "album": "(self-titled)", "year": "1994", "genre": "Pop", "significance": "Marked her reinvention with Stock Aitken Waterman-era pop sound continuing into dance territory.", "searchable": true}, {"artist": "Lana Del Rey", "album": "Born to Die: The Paradise Edition", "year": "2012", "genre": "Pop", "significance": "Expanded reissue of her breakout debut, adding the 'Paradise' EP.", "searchable": true}, {"artist": "Leftfield", "album": "A Final Hit: Greatest Hits", "year": "2009", "genre": "Electronic", "significance": "Compiles the pioneering British progressive house/electronic act's key tracks.", "searchable": true}, {"artist": "Leftfield", "album": "Leftism", "year": "1995", "genre": "Electronic", "significance": "Genre-defining debut album, foundational to British progressive house/big beat.", "searchable": true}, {"artist": "Lightning Seeds, The", "album": "Sense", "year": "1992", "genre": "Alt Rock/Pop", "significance": "Includes 'The Life of Riley'; core to the Britpop-adjacent jangle-pop era.", "searchable": true}, {"artist": "Lily Allen", "album": "Alright, Still", "year": "2006", "genre": "Pop", "significance": "Debut album that made her a UK pop breakthrough; includes 'Smile.'", "searchable": true}, {"artist": "Lily Allen", "album": "It's Not Me, It's You", "year": "2009", "genre": "Pop", "significance": "Second album, includes 'The Fear'; UK #1 album.", "searchable": true}, {"artist": "Lily Allen", "album": "Sheezus", "year": "2014", "genre": "Pop", "significance": "Third album referencing Kanye West's 'Yeezus'; more explicit pop/production.", "searchable": true}, {"artist": "Liquid Culture", "album": "(self-titled)", "year": "", "genre": "Electronic", "significance": "", "searchable": true}, {"artist": "Lisa Stansfield", "album": "Real Love", "year": "1991", "genre": "Pop/R&B", "significance": "Sophomore album continuing her blue-eyed soul sound after 'Affection.'", "searchable": true}, {"artist": "Lisa Stansfield", "album": "So Natural", "year": "1993", "genre": "Pop/R&B", "significance": "Third album, includes 'In All the Right Places.'", "searchable": true}, {"artist": "London Grammar", "album": "If You Wait", "year": "2013", "genre": "Alt Pop/Electronic", "significance": "Critically acclaimed debut; atmospheric indie-pop with Hannah Reid's distinctive vocals.", "searchable": true}, {"artist": "M People", "album": "Bizarre Fruit", "year": "1994", "genre": "Dance/Soul", "significance": "Mercury Prize-winning album; includes 'Moving On Up.'", "searchable": true}, {"artist": "M People", "album": "Bizarre Fruit II", "year": "1995", "genre": "Dance/Soul", "significance": "Expanded/remixed edition following the Mercury Prize win.", "searchable": true}, {"artist": "M People", "album": "Fresco", "year": "1997", "genre": "Dance/Soul", "significance": "Later album continuing their dance-soul sound with a slicker production style.", "searchable": true}, {"artist": "Maire Brennan", "album": "Misty Eyed Adventures", "year": "1998", "genre": "Celtic/New Age", "significance": "Solo album from the Clannad singer, blending Celtic and pop textures.", "searchable": true}, {"artist": "Mars Lasar", "album": "Olympus", "year": "1993", "genre": "New Age/Instrumental", "significance": "New age/instrumental concept album inspired by Greek mythology.", "searchable": true}, {"artist": "Mars Lasar", "album": "Olympus", "year": "1993", "genre": "New Age/Instrumental", "significance": "New age/instrumental concept album inspired by Greek mythology.", "searchable": true}, {"artist": "Martin Solveig", "album": "So Far", "year": "2011", "genre": "House/Dance", "significance": "French house/dance producer's album featuring international collaborations.", "searchable": true}, {"artist": "Massive Attack", "album": "(self-titled/logo)", "year": "1998", "genre": "Trip-Hop", "significance": "Likely their self-titled logo-cover release, part of the trip-hop pioneers' catalogue.", "searchable": true}, {"artist": "Massive Attack", "album": "Heligoland", "year": "2010", "genre": "Trip-Hop", "significance": "Long-awaited comeback album after a seven-year gap; darker, more collaborative.", "searchable": true}, {"artist": "Massive Attack", "album": "Protection", "year": "1994", "genre": "Trip-Hop", "significance": "Second album, deepened the trip-hop sound they helped pioneer on 'Blue Lines.'", "searchable": true}, {"artist": "Maxwell", "album": "Maxwell's Urban Hang Suite", "year": "1996", "genre": "R&B/Neo-Soul", "significance": "Landmark neo-soul debut; helped define the genre alongside D'Angelo.", "searchable": true}, {"artist": "Mike & The Mechanics", "album": "Beggar on a Beach of Gold", "year": "1995", "genre": "Rock/Pop", "significance": "Album from the Genesis-adjacent supergroup led by Mike Rutherford.", "searchable": true}, {"artist": "Mike & The Mechanics", "album": "Hits", "year": "1996", "genre": "Rock/Pop", "significance": "Compiles the band's biggest singles including 'The Living Years.'", "searchable": true}, {"artist": "Mike & The Mechanics / Paul Carrack", "album": "Rewired", "year": "2004", "genre": "Rock/Pop", "significance": "Later reunion-era album spotlighting vocalist Paul Carrack.", "searchable": true}, {"artist": "Mike Oldfield", "album": "The Songs of Distant Earth", "year": "1994", "genre": "Ambient/Instrumental", "significance": "Concept album inspired by Arthur C. Clarke's novel of the same name.", "searchable": true}, {"artist": "Mike Oldfield", "album": "Voyager", "year": "1996", "genre": "Instrumental/Celtic", "significance": "Explores Celtic musical themes across an instrumental suite.", "searchable": true}, {"artist": "Moby", "album": "Last Night", "year": "2008", "genre": "Electronic", "significance": "Concept album structured as a night out, from electronic dance to comedown.", "searchable": true}, {"artist": "Moby", "album": "Play", "year": "1999", "genre": "Electronic", "significance": "Landmark album blending old blues/gospel samples with electronica; every track was licensed for media.", "searchable": true}, {"artist": "Moodswings", "album": "Moodfood", "year": "", "genre": "Electronic", "significance": "", "searchable": true}, {"artist": "Morcheeba", "album": "Dive Deep", "year": "2008", "genre": "Trip-Hop", "significance": "Later album continuing the trip-hop/downtempo sound of the Godfrey siblings' project.", "searchable": true}, {"artist": "Morcheeba", "album": "Parts of the Process (Special Edition)", "year": "2003", "genre": "Trip-Hop", "significance": "Hits compilation including 'The Sea' and 'Rome Wasn't Built in a Day.'", "searchable": true}, {"artist": "Morcheeba", "album": "Who Can You Trust?", "year": "1996", "genre": "Trip-Hop", "significance": "Debut album, established their smoky trip-hop sound alongside Massive Attack and Portishead.", "searchable": true}, {"artist": "Mr. Mister", "album": "Welcome to the Real World", "year": "1985", "genre": "Rock/Pop", "significance": "Includes two US #1 hits: 'Broken Wings' and 'Kyrie.'", "searchable": true}, {"artist": "Natacha Atlas", "album": "Something Dangerous", "year": "2003", "genre": "World/Electronic", "significance": "Blends Arabic music with Western electronic/pop production.", "searchable": true}, {"artist": "Natacha Atlas", "album": "Something Dangerous", "year": "2003", "genre": "World/Electronic", "significance": "Blends Arabic music with Western electronic/pop production.", "searchable": true}, {"artist": "Natalie Merchant", "album": "Tigerlily", "year": "1995", "genre": "Alt Rock/Folk", "significance": "Debut solo album after leaving 10,000 Maniacs; includes 'Carnival' and 'Wonder.'", "searchable": true}, {"artist": "Nelly Furtado", "album": "Loose", "year": "2006", "genre": "Pop/R&B", "significance": "Career-defining reinvention with Timbaland; includes 'Promiscuous' and 'Say It Right.'", "searchable": true}, {"artist": "New Order", "album": "Republic", "year": "1993", "genre": "New Wave/Electronic", "significance": "Includes 'Regret'; marked their commercial re-emergence in the 90s.", "searchable": true}, {"artist": "New Order", "album": "Substance 1987", "year": "1987", "genre": "New Wave/Electronic", "significance": "Singles compilation, essential document of their post-Joy Division synth-rock evolution.", "searchable": true}, {"artist": "Oingo Boingo", "album": "Boingo", "year": "1994", "genre": "New Wave/Rock", "significance": "Later album from Danny Elfman's band before he shifted fully to film scoring.", "searchable": true}, {"artist": "OMD", "album": "Liberator", "year": "1993", "genre": "Synth-Pop", "significance": "Post-reunion-era album under Andy McCluskey's sole direction of the OMD name.", "searchable": true}, {"artist": "OMD", "album": "Sugar Tax", "year": "1991", "genre": "Synth-Pop", "significance": "Comeback hit album, includes 'Sailing on the Seven Seas' and 'Pandora's Box.'", "searchable": true}, {"artist": "OMD", "album": "The Best of OMD", "year": "1988", "genre": "Synth-Pop", "significance": "Compiles the synth-pop pioneers' hits including 'Enola Gay.'", "searchable": true}, {"artist": "OMD", "album": "Universal", "year": "1996", "genre": "Synth-Pop", "significance": "Later studio album before the band's extended hiatus.", "searchable": true}, {"artist": "Once Warriors", "album": "(soundtrack, self-titled cover)", "year": "", "genre": "Soundtrack", "significance": "", "searchable": true}, {"artist": "Orb, The", "album": "The Orb's Adventures Beyond the Ultraworld", "year": "1991", "genre": "Ambient/Electronic", "significance": "Landmark ambient house debut; helped define the genre.", "searchable": true}, {"artist": "Orb, The", "album": "U.F.Orb", "year": "1992", "genre": "Ambient/Electronic", "significance": "UK #1 album; includes 'Blue Room,' one of the longest singles to chart in the UK.", "searchable": true}, {"artist": "Orbit, William", "album": "Strange Cargos: The Best Of", "year": "1993", "genre": "Electronic/Ambient", "significance": "Compiles work from the producer later known for Madonna's 'Ray of Light.'", "searchable": true}, {"artist": "P!nk", "album": "I'm Not Dead", "year": "2006", "genre": "Pop/Rock", "significance": "Includes 'Stupid Girls' and 'U + Ur Hand'; marked her more rock-oriented pop sound.", "searchable": true}, {"artist": "Paul Weller", "album": "Modern Classics: The Greatest Hits", "year": "1998", "genre": "Rock/Mod", "significance": "Compiles solo hits from the former Jam/Style Council frontman's Britpop-era comeback.", "searchable": true}, {"artist": "Pet Shop Boys", "album": "Introspective", "year": "1988", "genre": "Synth-Pop", "significance": "Only six tracks, all extended dance mixes; a bold, unconventional album structure.", "searchable": true}, {"artist": "Peter Gabriel", "album": "Shaking the Tree: Sixteen Golden Greats", "year": "1990", "genre": "Art Rock/Pop", "significance": "Hits compilation spanning his art-rock solo career.", "searchable": true}, {"artist": "Phil Collins", "album": "...But Seriously", "year": "1989", "genre": "Pop/Rock", "significance": "Includes 'Another Day in Paradise'; his most political and socially conscious album.", "searchable": true}, {"artist": "Pierre Bayan", "album": "Spiritual Underground", "year": "", "genre": "Compilation/Ambient", "significance": "", "searchable": true}, {"artist": "Pink Floyd", "album": "The Wall", "year": "1979", "genre": "Progressive Rock", "significance": "Landmark rock opera/concept album; one of the best-selling albums in history.", "searchable": true}, {"artist": "Police, The", "album": "Greatest Hits", "year": "1992", "genre": "Rock/Pop", "significance": "Compiles the trio's biggest singles including 'Every Breath You Take.'", "searchable": true}, {"artist": "Portishead", "album": "(self-titled, 'P')", "year": "1997", "genre": "Trip-Hop", "significance": "Long-awaited second album, darker and more abrasive than 'Dummy.'", "searchable": true}, {"artist": "Portishead", "album": "Dummy", "year": "1994", "genre": "Trip-Hop", "significance": "Mercury Prize-winning debut; foundational trip-hop album alongside Massive Attack.", "searchable": true}, {"artist": "Pretenders", "album": "The Isle of View", "year": "1995", "genre": "Rock/Acoustic", "significance": "Live acoustic album reworking the band's catalogue with orchestral arrangements.", "searchable": true}, {"artist": "Propaganda", "album": "1234", "year": "1990", "genre": "Synth-Pop/New Wave", "significance": "Compilation from the ZTT-signed synth act, best known for 'Duel.'", "searchable": true}, {"artist": "Propaganda", "album": "A Secret Wish", "year": "1985", "genre": "Synth-Pop/New Wave", "significance": "Cult classic art-pop/synth album, highly influential despite modest chart success.", "searchable": true}, {"artist": "Propellerheads", "album": "Decksandrumsandrockandroll", "year": "1998", "genre": "Big Beat/Electronic", "significance": "Big beat landmark; includes 'History Repeating' with Shirley Bassey.", "searchable": true}, {"artist": "Pulp", "album": "His 'n' Hers", "year": "1994", "genre": "Britpop/Alt Rock", "significance": "Mercury Prize-nominated album that set up Pulp's imperial Britpop period.", "searchable": true}, {"artist": "Queen", "album": "Greatest Hits", "year": "1981", "genre": "Rock", "significance": "Best-selling album in UK chart history; spans their most iconic singles.", "searchable": true}, {"artist": "Queen", "album": "Made in Heaven", "year": "1995", "genre": "Rock", "significance": "Final studio album, completed after Freddie Mercury's death using his last vocal recordings.", "searchable": true}, {"artist": "Randy Crawford", "album": "The Collection", "year": "1992", "genre": "Jazz/Soul", "significance": "Hits compilation from the jazz-soul vocalist behind 'One Day I'll Fly Away.'", "searchable": true}, {"artist": "Red Hot + Rio", "album": "Various Artists", "year": "", "genre": "Compilation/Latin", "significance": "", "searchable": true}, {"artist": "Ric Ocasek", "album": "Fireball Zone", "year": "", "genre": "New Wave/Rock", "significance": "", "searchable": true}, {"artist": "Ric Ocasek", "album": "Negative Theater", "year": "", "genre": "New Wave/Rock", "significance": "", "searchable": true}, {"artist": "Ric Ocasek", "album": "Quick Change World", "year": "", "genre": "New Wave/Rock", "significance": "", "searchable": true}, {"artist": "Richard Marx", "album": "Rush Street", "year": "1991", "genre": "Pop/Rock", "significance": "Fourth studio album, continuing his adult-contemporary pop-rock sound.", "searchable": true}, {"artist": "Rihanna", "album": "Good Girl Gone Bad (Deluxe)", "year": "2007", "genre": "Pop/R&B", "significance": "Marked her transformation into an edgier pop icon; includes 'Umbrella.'", "searchable": true}, {"artist": "River City People", "album": "(self-titled)", "year": "", "genre": "Pop/Rock", "significance": "", "searchable": true}, {"artist": "Robert Miles", "album": "(fire/skull/ballroom cover, title unclear)", "year": "", "genre": "Trance/Electronic", "significance": "", "searchable": false}, {"artist": "Robert Miles", "album": "23am", "year": "2001", "genre": "Trance/Electronic", "significance": "Follow-up to 'Dreamland,' continuing his ambient/dream trance style.", "searchable": true}, {"artist": "Robert Miles", "album": "Dreamland", "year": "1996", "genre": "Trance/Electronic", "significance": "Includes 'Children,' a genre-defining dream trance anthem.", "searchable": true}, {"artist": "Roger Sanchez", "album": "First Contact", "year": "2001", "genre": "House/Dance", "significance": "House music producer's album featuring 'Another Chance,' a UK #1 single.", "searchable": true}, {"artist": "Roxette", "album": "Crash! Boom! Bang!", "year": "1994", "genre": "Pop/Rock", "significance": "Continued the Swedish duo's run of melodic pop-rock hits.", "searchable": true}, {"artist": "Roxette", "album": "Tourism", "year": "1992", "genre": "Pop/Rock", "significance": "Rarities/live/new tracks album released amid their global touring peak.", "searchable": true}, {"artist": "Roxy Music", "album": "Avalon", "year": "1982", "genre": "Art Rock/Pop", "significance": "Their final and most polished studio album; 'More Than This' is a defining art-pop track.", "searchable": true}, {"artist": "Sade", "album": "Diamond Life", "year": "1984", "genre": "Soul/Pop", "significance": "Debut album; 'Smooth Operator' helped define sophisti-pop/soul of the 80s.", "searchable": true}, {"artist": "Saint Etienne", "album": "Finisterre", "year": "2002", "genre": "Indie Pop/Electronic", "significance": "Concept album celebrating London, blending indie pop with dance influences.", "searchable": true}, {"artist": "Sandra", "album": "Close to Seven", "year": "1992", "genre": "Pop/Eurodance", "significance": "German Eurodance/pop singer's mid-90s studio album.", "searchable": true}, {"artist": "Sandra", "album": "Fading Shades", "year": "2013", "genre": "Pop/Eurodance", "significance": "Later career studio album continuing her pop sound.", "searchable": true}, {"artist": "Sandra", "album": "The Wheel of Time", "year": "2002", "genre": "Pop/Eurodance", "significance": "Studio album from the 80s/90s Eurodance star behind 'Maria Magdalena.'", "searchable": true}, {"artist": "Santana", "album": "The Best of Santana", "year": "1998", "genre": "Rock/Latin", "significance": "Compiles decades of Latin rock hits from the guitar legend.", "searchable": true}, {"artist": "Sarah Brightman", "album": "Fly", "year": "1995", "genre": "Classical Crossover", "significance": "Classical crossover album, part of her transition from musical theatre to pop-classical.", "searchable": true}, {"artist": "Sarah McLachlan", "album": "Afterglow", "year": "2003", "genre": "Pop/Folk", "significance": "Includes 'Fallen'; follow-up to the massively successful 'Surfacing.'", "searchable": true}, {"artist": "Sarah McLachlan", "album": "Bloom: Remix Album", "year": "2005", "genre": "Pop/Folk", "significance": "Remix collection reworking tracks from 'Afterglow' with electronic producers.", "searchable": true}, {"artist": "Scarlet", "album": "Naked", "year": "1995", "genre": "Pop/Alt Rock", "significance": "UK duo's one hit album, featuring the single 'Independent Love Song.'", "searchable": true}, {"artist": "Shakespears Sister", "album": "Hormonally Yours", "year": "1992", "genre": "Pop/Alt Rock", "significance": "Includes 'Stay,' a UK #1 for eight weeks; their commercial peak.", "searchable": true}, {"artist": "Sheryl Crow", "album": "(self-titled)", "year": "1996", "genre": "Rock/Pop", "significance": "Grammy Album of the Year winner; includes 'If It Makes You Happy.'", "searchable": true}, {"artist": "Shivaree", "album": "I Oughtta Give You a Shot in the Head for Making Me Live in This Dump", "year": "1999", "genre": "Alt Rock", "significance": "Cult debut album, later track 'Goodnight Moon' gained fame via Kill Bill.", "searchable": true}, {"artist": "Sigue Sigue Sputnik", "album": "Dress for Excess: Caligula 1990", "year": "1988", "genre": "Punk/New Wave", "significance": "Glam-punk/electronic act known for selling advertising space between album tracks.", "searchable": true}, {"artist": "Silk", "album": "(self-titled, purple abstract cover)", "year": "", "genre": "Compilation/Lounge", "significance": "", "searchable": true}, {"artist": "Simple Minds", "album": "The Best of Simple Minds", "year": "2001", "genre": "Rock/New Wave", "significance": "Compiles hits including 'Don't You (Forget About Me)' from The Breakfast Club.", "searchable": true}, {"artist": "Simply Red", "album": "Life", "year": "1995", "genre": "Pop/Soul", "significance": "Includes 'Fairground,' a UK #1 single sampling Rose Royce.", "searchable": true}, {"artist": "Simply Red", "album": "Stars", "year": "1991", "genre": "Pop/Soul", "significance": "Best-selling UK album of 1991; includes the title track and 'Something Got Me Started.'", "searchable": true}, {"artist": "Snap!", "album": "The Madman's Return", "year": "1992", "genre": "Eurodance", "significance": "Includes 'Rhythm Is a Dancer,' one of the biggest Eurodance hits of all time.", "searchable": true}, {"artist": "Sophie B. Hawkins", "album": "Tongues and Tails", "year": "1992", "genre": "Pop/Rock", "significance": "Debut album, includes 'Damn I Wish I Was Your Lover.'", "searchable": true}, {"artist": "Sophie B. Hawkins", "album": "Whaler", "year": "1994", "genre": "Pop/Rock", "significance": "Includes 'As I Lay Me Down,' one of the longest-charting Billboard Hot 100 singles.", "searchable": true}, {"artist": "Starsailor", "album": "On the Outside (Special CD/DVD Edition)", "year": "2003", "genre": "Alt Rock", "significance": "Third album, includes bonus DVD material and behind-the-scenes content.", "searchable": true}, {"artist": "Starsailor", "album": "Silence Is Easy", "year": "2003", "genre": "Alt Rock", "significance": "Produced partly by Phil Spector; second album from the British alt-rock band.", "searchable": true}, {"artist": "Stiltskin", "album": "The Mind's Eye", "year": "1997", "genre": "Rock", "significance": "One-hit act known for 'Inside,' famously used in a Levi's commercial.", "searchable": true}, {"artist": "Sting", "album": "...Nothing Like the Sun", "year": "1987", "genre": "Rock/Pop", "significance": "Double album, tribute to his late mother; features Eric Clapton and Branford Marsalis.", "searchable": true}, {"artist": "Sting", "album": "Fields of Gold: The Best of Sting 1984-1994", "year": "1994", "genre": "Rock/Pop", "significance": "Compiles his solo hits after The Police, including the title track.", "searchable": true}, {"artist": "Stone Roses, The", "album": "(self-titled)", "year": "1989", "genre": "Alt Rock", "significance": "Landmark Madchester/baggy debut, hugely influential on Britpop.", "searchable": true}, {"artist": "Stranglers, The", "album": "About Time", "year": "1995", "genre": "Punk/New Wave", "significance": "Later-career studio album from the veteran punk/new wave band.", "searchable": true}, {"artist": "Stranglers, The", "album": "Greatest Hits 1977-1990", "year": "1990", "genre": "Punk/New Wave", "significance": "Compiles the band's punk-era and later hits including 'Golden Brown.'", "searchable": true}, {"artist": "Talk Talk", "album": "History Revisited: The Remixes", "year": "1991", "genre": "New Wave/Art Pop", "significance": "Remix album reworking early singles, contrasting with their later experimental direction.", "searchable": true}, {"artist": "Talk Talk", "album": "Natural History: The Very Best of Talk Talk", "year": "1990", "genre": "New Wave/Art Pop", "significance": "Definitive hits compilation, spanning their synth-pop-to-post-rock evolution.", "searchable": true}, {"artist": "Talking Heads", "album": "Once in a Lifetime: The Best of Talking Heads", "year": "1992", "genre": "New Wave", "significance": "Hits compilation from the art-rock pioneers.", "searchable": true}, {"artist": "Talking Heads", "album": "Stop Making Sense", "year": "1984", "genre": "New Wave", "significance": "Acclaimed live album/concert film soundtrack, considered one of the greatest live albums ever.", "searchable": true}, {"artist": "Tangerine Dream", "album": "The Private Music of Tangerine Dream", "year": "1993", "genre": "Electronic/Ambient", "significance": "Compiles the pioneering German electronic/ambient group's work.", "searchable": true}, {"artist": "Tasmin Archer", "album": "Great Expectations", "year": "1992", "genre": "Pop/Rock", "significance": "Debut album, includes 'Sleeping Satellite,' a UK #1 single.", "searchable": true}, {"artist": "Tears for Fears", "album": "Raoul and the Kings of Spain", "year": "1995", "genre": "Synth-Pop", "significance": "Later album after the Roland Orzabal/Curt Smith reunion writing period.", "searchable": true}, {"artist": "Texas", "album": "Southside", "year": "1989", "genre": "Rock/Pop", "significance": "Debut album, includes 'I Don't Want a Lover'; launched the Scottish band's career.", "searchable": true}, {"artist": "Texas", "album": "White on Blonde", "year": "1997", "genre": "Rock/Pop", "significance": "Career-reviving album; includes 'Say What You Want,' their commercial peak.", "searchable": true}, {"artist": "The Cranberries", "album": "Bury the Hatchet", "year": "1999", "genre": "Alt Rock", "significance": "Fourth album, includes 'Promises'; continued their alt-rock success post-'Zombie.'", "searchable": true}, {"artist": "The The", "album": "Infected", "year": "1986", "genre": "Alt Rock", "significance": "Concept album with accompanying long-form music videos, ambitious for its era.", "searchable": true}, {"artist": "The The", "album": "Mind Bomb", "year": "1989", "genre": "Alt Rock", "significance": "Politically charged album featuring Johnny Marr on guitar.", "searchable": true}, {"artist": "Thomas Dolby", "album": "Astronauts & Heretics", "year": "1992", "genre": "Synth-Pop", "significance": "Later album from the synth-pop innovator behind 'She Blinded Me with Science.'", "searchable": true}, {"artist": "Thomas Dolby", "album": "Retrospectacle: The Best of Thomas Dolby", "year": "1994", "genre": "Synth-Pop", "significance": "Career retrospective of the synth-pop pioneer and tech entrepreneur.", "searchable": true}, {"artist": "Tiesto", "album": "In Search of Sunrise 6: Ibiza", "year": "2007", "genre": "Trance", "significance": "Part of his long-running trance mix compilation series.", "searchable": true}, {"artist": "Tiesto", "album": "Kaleidoscope", "year": "2009", "genre": "Trance", "significance": "Marked his move toward a more commercial, vocal-led electronic sound.", "searchable": true}, {"artist": "Tina Turner", "album": "Simply the Best", "year": "1991", "genre": "Rock/Pop", "significance": "Definitive hits compilation spanning her solo comeback era.", "searchable": true}, {"artist": "Tori Amos", "album": "Under the Pink", "year": "1994", "genre": "Alt Rock", "significance": "Follow-up to 'Little Earthquakes'; includes 'Cornflake Girl,' cemented her cult following.", "searchable": true}, {"artist": "Tosca", "album": "Dehli9", "year": "2003", "genre": "Downtempo/Electronic", "significance": "Austrian downtempo duo (Richard Dorfmeister of Kruder & Dorfmeister) landmark chillout album.", "searchable": true}, {"artist": "Toto", "album": "Past to Present 1977-1990", "year": "1990", "genre": "Rock", "significance": "Hits compilation including 'Africa' and 'Rosanna.'", "searchable": true}, {"artist": "Transglobal Underground", "album": "International Times", "year": "1994", "genre": "World/Electronic", "significance": "Pioneering world music/electronic fusion act blending dub, dance and global sounds.", "searchable": true}, {"artist": "Transvision Vamp", "album": "Velveteen", "year": "1989", "genre": "Rock/Pop", "significance": "Includes 'Baby I Don't Care'; peak of the British pop-punk band's chart success.", "searchable": true}, {"artist": "U2", "album": "18 Singles", "year": "2006", "genre": "Rock", "significance": "Hits compilation spanning nearly three decades of the band's career.", "searchable": true}, {"artist": "U2", "album": "Pop", "year": "1997", "genre": "Rock", "significance": "Experimented heavily with electronic/dance production, a notable departure from their rock roots.", "searchable": true}, {"artist": "U2", "album": "The Unforgettable Fire", "year": "1984", "genre": "Rock", "significance": "Produced by Brian Eno/Daniel Lanois; includes 'Pride (In the Name of Love).'", "searchable": true}, {"artist": "U2", "album": "Zooropa", "year": "1993", "genre": "Rock", "significance": "Grammy-winning, more experimental/electronic album made during the Zoo TV tour.", "searchable": true}, {"artist": "UB40", "album": "The UB40 File (Complete 1980 Catalogue)", "year": "1980", "genre": "Reggae/Pop", "significance": "Compiles the reggae band's earliest catalogue on one double release.", "searchable": true}, {"artist": "Vanessa Paradis", "album": "(self-titled)", "year": "1992", "genre": "Pop", "significance": "English-language crossover album, co-written by Lenny Kravitz.", "searchable": true}, {"artist": "Vanessa Paradis", "album": "M&J", "year": "", "genre": "Pop", "significance": "", "searchable": true}, {"artist": "Various Artists", "album": "100 Hits: 80s Classics (5CD)", "year": "", "genre": "Compilation/80s", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Absolution: Rock the Alternative Way", "year": "", "genre": "Compilation/Rock", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "All Woman 2", "year": "", "genre": "Compilation/Pop", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "All Woman 3", "year": "", "genre": "Compilation/Pop", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "All Woman 4", "year": "", "genre": "Compilation/Pop", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Ambient Ibiza Vol. 3 (Music for Dreams)", "year": "", "genre": "Compilation/Ambient", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Ambient Moods: 17 Atmospheric Moods", "year": "", "genre": "Compilation/Ambient", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Asian: House and Lounge Atmosphere", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "AX Copenhagen", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Babylon Bar, Part 03", "year": "", "genre": "Compilation/World-Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Balearic Beach Session", "year": "", "genre": "Compilation/Balearic", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Bambuddha Grove: The Gathering (2CD)", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha Bar Presents: Amnesty International 40th Anniversary", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar Beach: Ibiza", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar by Claude Challe (Shaft Mambo)", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar IV by David Visan", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar IX by Ravin", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar V", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar VII", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Buddha-Bar VIII", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Burning Blue Soul", "year": "", "genre": "Compilation/Reggae-Soul", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Cafe del Mar XVI", "year": "", "genre": "Compilation/Balearic", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Cafe del Mar: Terrace Mix", "year": "", "genre": "Compilation/Balearic", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Cafe Paradiso: Luxury Chillout Grooves", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Chillout: The Best Album in the World...Ever!", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Costes, Mixed by Stephane Pompougnac", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Dead Man Walking (Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Dusk", "year": "", "genre": "Compilation/Electronic", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Electric Dreams (2CD, 38 Classic Electric Hits)", "year": "", "genre": "Compilation/Synth-Pop", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Forrest Gump: The Soundtrack", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Happiness by Claude Challe & Jean-Marc", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Ibiza Del Mar", "year": "", "genre": "Compilation/Balearic", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Island Life: Ibiza Grooves and Chillout Tunes", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Judge Dredd (Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Le Coffret du Bien-Etre", "year": "", "genre": "Compilation/Spa-Ambient", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Mission: Impossible (Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Nirvana Lounge 02 by Claude Challe", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Nirvana Lounge by Claude Challe & Ravin", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Out of Phase: The Future Sound of Cairo", "year": "", "genre": "Compilation/World-Electronic", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Pure Moods", "year": "", "genre": "Compilation/New Age", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Pure... Alternative 80s (4CD)", "year": "", "genre": "Compilation/80s Alt", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "Slumdog Millionaire (Motion Picture Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Sun by Claude Challe", "year": "", "genre": "Compilation/Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "The Best Album in the World...Ever! 2002", "year": "", "genre": "Compilation/Pop-Rock", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Various Artists", "album": "The Chillout Album 2", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "The Karma Collection", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "The Mantra Lounge", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "The Saint (Motion Picture Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "The Truth and the Light: Music from The X-Files", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "The Ultimate Dream Mix 3", "year": "", "genre": "Compilation/Chillout", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "The Weekend (3CD)", "year": "", "genre": "Compilation/House-Lounge", "significance": "Part of the chillout/lounge compilation boom of the late 90s-2000s bar/spa scene.", "searchable": true}, {"artist": "Various Artists", "album": "Thelma & Louise (Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Toys (Motion Picture Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Trainspotting (Soundtrack)", "year": "", "genre": "Soundtrack", "significance": "Film/TV soundtrack compilation.", "searchable": true}, {"artist": "Various Artists", "album": "Trance Essentials 2011, Vol. 1", "year": "", "genre": "Compilation/Trance", "significance": "Compilation/mix album; specific track sourcing and mixing vary by edition.", "searchable": true}, {"artist": "Vaya Con Dios", "album": "Time Flies", "year": "1992", "genre": "Pop/Jazz", "significance": "Belgian band's compilation, known for the jazzy pop hit 'Nah Neh Nah.'", "searchable": true}, {"artist": "Verve, The", "album": "Forth", "year": "2008", "genre": "Alt Rock", "significance": "Reunion album after a decade apart; includes 'Love Is Noise.'", "searchable": true}, {"artist": "Verve, The", "album": "This Is Music: The Singles 92-98", "year": "2004", "genre": "Alt Rock", "significance": "Compiles the band's singles including 'Bitter Sweet Symphony.'", "searchable": true}, {"artist": "Voice of the Beehive", "album": "Honey Lingers", "year": "1991", "genre": "Rock/Pop", "significance": "Second album from the American-British indie pop band.", "searchable": true}, {"artist": "Welcome to Tomorrow", "album": "(artist unclear)", "year": "", "genre": "Pop", "significance": "", "searchable": false}, {"artist": "Yell Zebra", "album": "(self-titled)", "year": "", "genre": "Rock", "significance": "", "searchable": true}, {"artist": "Yello", "album": "The Singles Collection", "year": "1990", "genre": "Electronic/Synth-Pop", "significance": "Compiles the Swiss electronic duo's hits including 'Oh Yeah.'", "searchable": true}, {"artist": "Zero 7", "album": "Simple Things", "year": "2001", "genre": "Downtempo/Electronic", "significance": "Acclaimed debut, downtempo/trip-hop landmark featuring Sia and Sophie Barker.", "searchable": true}, {"artist": "Zero 7", "album": "The Garden", "year": "2006", "genre": "Downtempo/Electronic", "significance": "Third album continuing their soulful downtempo sound.", "searchable": true}, {"artist": "Zero 7", "album": "When It Falls", "year": "2004", "genre": "Downtempo/Electronic", "significance": "Sophomore album, includes 'Home' and 'Somersault.'", "searchable": true}, {"artist": "ZZ Top", "album": "Greatest Hits", "year": "1992", "genre": "Rock", "significance": "Compiles the Texas blues-rock trio's biggest hits including 'Legs' and 'Sharp Dressed Man.'", "searchable": true}];
+  COLLECTION.forEach((item, i) => { item._idx = i; });
+
+  const subtitleEl = document.getElementById("cdc-subtitle");
+  subtitleEl.textContent = COLLECTION.length + " ALBUMS \u00B7 COVER ART VIA ITUNES \u00B7 A-Z BROWSE";
+
+  let query = "";
+
+  const artCache = new Map();
+  let queue = [];
+  let queueRunning = false;
+
+  function runQueue() {
+    if (queueRunning) return;
+    queueRunning = true;
+    const step = () => {
+      if (queue.length === 0) { queueRunning = false; return; }
+      const job = queue.shift();
+      job();
+      setTimeout(step, 220);
+    };
+    step();
+  }
+
+  function enqueueFetch(key, artist, album, cb) {
+    if (artCache.has(key)) { cb(artCache.get(key)); return; }
+    queue.push(async () => {
+      try {
+        const term = encodeURIComponent(artist + " " + album);
+        const res = await fetch("https://itunes.apple.com/search?term=" + term + "&entity=album&limit=1");
+        const json = await res.json();
+        let url = null;
+        if (json.results && json.results[0] && json.results[0].artworkUrl100) {
+          url = json.results[0].artworkUrl100.replace("100x100", "600x600");
+        }
+        artCache.set(key, url);
+        cb(url);
+      } catch (e) {
+        artCache.set(key, null);
+        cb(null);
+      }
+    });
+    runQueue();
+  }
+
+  function getLetter(artist) {
+    const raw = artist.replace(/^\(/, "").trim();
+    let letter = raw.charAt(0).toUpperCase();
+    if (!/[A-Z]/.test(letter)) letter = "#";
+    return letter;
+  }
+
+  function escapeHtml(s) {
+    return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  // ---------- Best Sellers (changes once per week, same for all visitors that week) ----------
+  function getISOWeekSeed() {
+    const now = new Date();
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return d.getUTCFullYear() * 100 + weekNo; // e.g. 202628
+  }
+
+  // Simple deterministic PRNG (mulberry32) seeded by the ISO week number,
+  // so every visitor sees the same 3 picks for the whole week, and they
+  // rotate automatically the moment a new week starts.
+  function mulberry32(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function pickWeeklyThree() {
+    const searchableItems = COLLECTION.filter(i => i.searchable);
+    const pool = searchableItems.length >= 3 ? searchableItems : COLLECTION;
+    const rand = mulberry32(getISOWeekSeed());
+    const shuffled = pool.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, 3);
+  }
+
+  function renderBestSellers() {
+    const container = document.getElementById("cdc-bestsellers");
+    container.innerHTML = "";
+    pickWeeklyThree().forEach(item => {
+      const card = document.createElement("div");
+      card.className = "bs-card";
+      card.onclick = () => openDetail(item._idx);
+
+      const cover = document.createElement("div");
+      cover.className = "bs-cover";
+      cover.textContent = "\u25C9";
+      cover.dataset.artist = item.artist;
+      cover.dataset.album = item.album;
+      cover.dataset.searchable = item.searchable;
+      loadCoverInto(cover, item);
+
+      const name = document.createElement("div");
+      name.className = "bs-name";
+      name.textContent = item.album;
+
+      const artistEl = document.createElement("div");
+      artistEl.className = "bs-artist";
+      artistEl.textContent = item.artist;
+
+      card.appendChild(cover);
+      card.appendChild(name);
+      card.appendChild(artistEl);
+      container.appendChild(card);
+    });
+  }
+
+  function loadCoverInto(el, item) {
+    if (!item.searchable) return;
+    const key = item.artist + "::" + item.album;
+    enqueueFetch(key, item.artist, item.album, (url) => {
+      if (url) {
+        const img = new Image();
+        img.onload = () => { el.innerHTML = ""; el.appendChild(img); };
+        img.src = url;
+      }
+    });
+  }
+
+  // ---------- Crate nav ----------
+  const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#".split("");
+  function buildCrateNav() {
+    const present = new Set();
+    COLLECTION.forEach(item => present.add(getLetter(item.artist)));
+    const nav = document.getElementById("cdc-nav");
+    nav.innerHTML = "";
+    ALL_LETTERS.forEach(l => {
+      const btn = document.createElement("button");
+      btn.className = "crate-btn" + (present.has(l) ? "" : " disabled");
+      btn.textContent = l;
+      btn.onclick = () => {
+        const el = document.getElementById("letter-" + l);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+      nav.appendChild(btn);
+    });
+  }
+
+  // ---------- Lazy cover loading for list rows ----------
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const idx = parseInt(el.dataset.idx, 10);
+        const item = COLLECTION[idx];
+        loadCoverInto(el, item);
+        observer.unobserve(el);
+      }
+    });
+  }, { rootMargin: "250px" });
+
+  // ---------- List rendering ----------
+  function render() {
+    const listEl = document.getElementById("cdc-list");
+    listEl.innerHTML = "";
+    const q = query.trim().toLowerCase();
+    const filtered = COLLECTION.filter(item => {
+      if (!q) return true;
+      return item.artist.toLowerCase().includes(q) ||
+             item.album.toLowerCase().includes(q) ||
+             item.genre.toLowerCase().includes(q) ||
+             (item.year && item.year.includes(q));
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div class="empty-state">No albums match that search.</div>';
+      return;
+    }
+
+    const groups = {};
+    filtered.forEach(item => {
+      const letter = getLetter(item.artist);
+      if (!groups[letter]) groups[letter] = [];
+      groups[letter].push(item);
+    });
+
+    Object.keys(groups).sort().forEach(letter => {
+      const divider = document.createElement("div");
+      divider.className = "divider-tab";
+      divider.id = "letter-" + letter;
+      divider.innerHTML = '<span class="divider-notch"></span><span class="divider-letter">' + letter + '</span><span class="count-badge">' + groups[letter].length + ' album' + (groups[letter].length !== 1 ? "s" : "") + '</span>';
+      listEl.appendChild(divider);
+
+      groups[letter].forEach(item => {
+        const row = document.createElement("div");
+        row.className = "row";
+        row.onclick = () => openDetail(item._idx);
+
+        const cover = document.createElement("div");
+        cover.className = "cover-slot";
+        cover.dataset.idx = item._idx;
+        cover.textContent = "\u25C9";
+        observer.observe(cover);
+
+        const tags = [];
+        if (item.genre) tags.push('<span class="tag">' + escapeHtml(item.genre) + '</span>');
+
+        const yearHtml = item.year ? ' <span class="row-year">&middot; ' + escapeHtml(item.year) + '</span>' : "";
+        const sigHtml = item.significance ? '<div class="row-sig">' + escapeHtml(item.significance) + '</div>' : "";
+
+        const rowText = document.createElement("div");
+        rowText.className = "row-text";
+        rowText.innerHTML =
+          '<div class="row-artist">' + escapeHtml(item.artist) + yearHtml + '</div>' +
+          '<div class="row-album">' + escapeHtml(item.album) + '</div>' +
+          sigHtml +
+          '<div class="row-tags">' + tags.join("") + '</div>';
+
+        row.appendChild(cover);
+        row.appendChild(rowText);
+        listEl.appendChild(row);
+      });
+    });
+  }
+
+  document.getElementById("cdc-search").addEventListener("input", (e) => {
+    query = e.target.value;
+    render();
+  });
+
+  // ---------- Detail view ----------
+  const wikiCache = new Map();
+
+  function fetchWithTimeout(url, ms) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+  }
+
+  async function fetchWikiExtract(artist, album) {
+    const cacheKey = artist + "::" + album;
+    if (wikiCache.has(cacheKey)) return wikiCache.get(cacheKey);
+    try {
+      const searchTerm = encodeURIComponent(artist + " " + album + " album");
+      const searchRes = await fetchWithTimeout("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + searchTerm + "&format=json&origin=*", 6000);
+      if (!searchRes.ok) { wikiCache.set(cacheKey, null); return null; }
+      const searchJson = await searchRes.json();
+      const hits = searchJson.query && searchJson.query.search;
+      if (!hits || hits.length === 0) { wikiCache.set(cacheKey, null); return null; }
+      const title = hits[0].title;
+      const summaryRes = await fetchWithTimeout("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title), 6000);
+      if (!summaryRes.ok) { wikiCache.set(cacheKey, null); return null; }
+      const summaryJson = await summaryRes.json();
+      const extract = summaryJson.extract || null;
+      wikiCache.set(cacheKey, extract);
+      return extract;
+    } catch (e) {
+      wikiCache.set(cacheKey, null);
+      return null;
+    }
+  }
+
+  function openDetail(idx) {
+    const item = COLLECTION[idx];
+    document.getElementById("cdc-bestsellers-wrap").classList.add("hidden");
+    document.getElementById("cdc-nav").classList.add("hidden");
+    document.getElementById("cdc-list").classList.add("hidden");
+    document.getElementById("cdc-detail").classList.add("active");
+
+    document.getElementById("cdc-detail-artist").textContent = item.artist;
+    document.getElementById("cdc-detail-album").textContent = item.album;
+    document.getElementById("cdc-detail-year").textContent = item.year ? item.year : "";
+    document.getElementById("cdc-detail-genre").textContent = item.genre || "\u2014";
+    const sigEl = document.getElementById("cdc-detail-sig");
+    if (item.significance) {
+      sigEl.textContent = item.significance;
+      sigEl.classList.remove("muted");
+    } else {
+      sigEl.textContent = "No notes recorded for this release yet.";
+      sigEl.classList.add("muted");
+    }
+
+    const coverEl = document.getElementById("cdc-detail-cover");
+    coverEl.innerHTML = "\u25C9";
+    if (item.searchable) {
+      const key = item.artist + "::" + item.album;
+      enqueueFetch(key, item.artist, item.album, (url) => {
+        if (url) {
+          const img = new Image();
+          img.onload = () => { coverEl.innerHTML = ""; coverEl.appendChild(img); };
+          img.src = url;
+        }
+      });
+    }
+
+    const wikiEl = document.getElementById("cdc-detail-wiki");
+    const wikiLinkEl = document.getElementById("cdc-wiki-link");
+    wikiEl.textContent = "Looking this up...";
+    wikiEl.classList.remove("muted");
+    wikiLinkEl.style.display = "none";
+    wikiLinkEl.href = "https://en.wikipedia.org/w/index.php?search=" + encodeURIComponent(item.artist + " " + item.album + " album");
+
+    fetchWikiExtract(item.artist, item.album).then(extract => {
+      if (extract) {
+        wikiEl.textContent = extract;
+        wikiLinkEl.style.display = "inline-block";
+      } else {
+        wikiEl.textContent = "A live summary couldn't be found or loaded for this release.";
+        wikiEl.classList.add("muted");
+        wikiLinkEl.style.display = "inline-block";
+      }
+    });
+
+    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+    try { history.pushState({ cdcDetail: idx }, "", "#album-" + idx); } catch (e) {}
+  }
+
+  function closeDetail() {
+    document.getElementById("cdc-bestsellers-wrap").classList.remove("hidden");
+    document.getElementById("cdc-nav").classList.remove("hidden");
+    document.getElementById("cdc-list").classList.remove("hidden");
+    document.getElementById("cdc-detail").classList.remove("active");
+    try { history.pushState({}, "", window.location.pathname + window.location.search); } catch (e) {}
+  }
+
+  document.getElementById("cdc-back-btn").addEventListener("click", closeDetail);
+
+  window.addEventListener("popstate", () => {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith("#album-")) {
+      const idx = parseInt(hash.replace("#album-", ""), 10);
+      if (!isNaN(idx) && COLLECTION[idx]) openDetail(idx);
+    } else {
+      closeDetail();
+    }
+  });
+
+  // ---------- Scroll to top ----------
+  const scrollBtn = document.getElementById("cdc-scroll-top");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 400) scrollBtn.classList.add("visible");
+    else scrollBtn.classList.remove("visible");
+  });
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // ---------- Sticky header height sync ----------
+  function syncHeaderHeight() {
+    const headerEl = document.getElementById("cdc-header");
+    if (headerEl) {
+      ROOT.style.setProperty("--header-h", headerEl.offsetHeight + "px");
+    }
+  }
+  window.addEventListener("resize", syncHeaderHeight);
+
+  // ---------- Init ----------
+  renderBestSellers();
+  buildCrateNav();
+  render();
+  syncHeaderHeight();
+  setTimeout(syncHeaderHeight, 300); // re-measure after web fonts finish loading
+
+  if (window.location.hash && window.location.hash.startsWith("#album-")) {
+    const idx = parseInt(window.location.hash.replace("#album-", ""), 10);
+    if (!isNaN(idx) && COLLECTION[idx]) openDetail(idx);
+  }
+})();
+</script>
+</body>
+</html>
