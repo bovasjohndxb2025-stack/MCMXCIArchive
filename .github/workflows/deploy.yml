@@ -22,4 +22,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./ --project-name=mcmxcicollection --branch=main --yes
+          wranglerVersion: '4.107.1'  # Forces the action to use the correct version
+          command: pages deploy ./ --project-name=mcmxcicollection --branch=main
