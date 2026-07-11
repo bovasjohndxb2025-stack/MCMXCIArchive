@@ -3,7 +3,7 @@ name: Deploy Static Assets
 on:
   push:
     branches:
-      - main  # Make sure this matches your default branch name (main or master)
+      - main
 
 jobs:
   deploy:
@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
