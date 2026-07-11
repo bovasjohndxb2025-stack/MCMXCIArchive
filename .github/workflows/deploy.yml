@@ -17,11 +17,13 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install Wrangler
-        run: npm install -g wrangler
+      - name: Clear npm Cache & Clean Install Wrangler
+        run: |
+          npm cache clean --force
+          npm install wrangler@latest --save-dev
 
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: wrangler pages deploy ./ --project-name=mcmxcicollection --branch=main
+        run: npx wrangler pages deploy ./ --project-name=mcmxcicollection --branch=main
