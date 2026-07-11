@@ -1,0 +1,13 @@
+{
+  "name": "mcmxci-a-d-archive",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MCMXCI.a.D Archive - CD collection browser with cached cover art",
+  "scripts": {
+    "fetch-covers": "node fetch-covers.js",
+    "build": "node fetch-covers.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
